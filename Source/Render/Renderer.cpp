@@ -2,8 +2,19 @@
 // Created by koncle on 2019/6/11.
 //
 #include "Renderer.h"
+#include "../Texture/TextureAtlas.h"
 
-Renderer::Renderer(const char *img_path) : m_texture(img_path) {
+Renderer::Renderer(const char *img_path) : m_Texture(img_path) {
+
+    std::vector<GLfloat> texCoords = m_Texture.getTexture("default");
+//    int i = 0;
+//    for (const auto &item : texCoords) {
+//        std::cout << item << " ";
+//        if(++i%8==0){
+//            std:: cout << std::endl;
+//        }
+//    }
+    std::cout << std::endl;
     m_model.addData(
             {
                     //Back
@@ -42,37 +53,7 @@ Renderer::Renderer(const char *img_path) : m_texture(img_path) {
                     1, 0, 1,
                     0, 0, 1.
             },
-            {
-                    0.0f, 0.0f,
-                    1.0f, 0.0f,
-                    1.0f, 1.0f,
-                    0.0f, 1.0f,
-
-                    0.0f, 0.0f,
-                    1.0f, 0.0f,
-                    1.0f, 1.0f,
-                    0.0f, 1.0f,
-
-                    1.0f, 0.0f,
-                    1.0f, 1.0f,
-                    0.0f, 1.0f,
-                    0.0f, 0.0f,
-
-                    1.0f, 0.0f,
-                    1.0f, 1.0f,
-                    0.0f, 1.0f,
-                    0.0f, 0.0f,
-//
-                    0.0f, 1.0f,
-                    1.0f, 1.0f,
-                    1.0f, 0.0f,
-                    0.0f, 0.0f,
-//
-                    0.0f, 1.0f,
-                    1.0f, 1.0f,
-                    1.0f, 0.0f,
-                    0.0f, 0.0f,
-            },
+            texCoords,
             {
                     // 前
                     0, 1, 2,
@@ -106,7 +87,7 @@ void Renderer::render(Player &camera) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     m_shader.use();
-    m_texture.bindTexture();
+    m_Texture.bindTexture();
     m_model.bindVAO();
 
     auto ProjViewMatrix = camera.getProjViewMatrix();
@@ -121,7 +102,7 @@ void Renderer::render(Player &camera) {
         glDrawElements(GL_TRIANGLES, m_model.getIndicesCount(), GL_UNSIGNED_INT, 0);
     }
 
-//    m_quads.clear();
+    m_quads.clear();
 
 }
 

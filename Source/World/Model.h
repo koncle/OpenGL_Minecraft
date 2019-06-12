@@ -4,7 +4,7 @@
 #include "glad/glad.h"
 #include <GLFW/glfw3.h>
 #include <vector>
-#include "NonCopyable.h"
+#include "../Utils/NonCopyable.h"
 
 class Model : public NonCopyable
 {

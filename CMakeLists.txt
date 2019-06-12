@@ -29,8 +29,6 @@ set(LIBS glfw3 GLAD STB)
 #target_link_libraries(OpenGLProjects  ${LIBS})
 
 file(GLOB_RECURSE SOURCE
-        "Source/Shader/*.h"
-        "Source/Shader/*.cpp"
         "Source/*.h"
         "Source/*.cpp")
 add_executable(GC ${SOURCE})
