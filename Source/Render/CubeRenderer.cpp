@@ -1,20 +1,12 @@
 //
 // Created by koncle on 2019/6/11.
 //
-#include "Renderer.h"
-#include "../Texture/TextureAtlas.h"
+#include "CubeRenderer.h"
 
-Renderer::Renderer(const char *img_path) : m_Texture(img_path) {
-
+CubeRenderer::CubeRenderer(const char *img_path, const char *vs, const char *fs) : m_Texture(img_path), m_shader_simple(vs, fs) {
     std::vector<GLfloat> texCoords = m_Texture.getTexture("default");
-//    int i = 0;
-//    for (const auto &item : texCoords) {
-//        std::cout << item << " ";
-//        if(++i%8==0){
-//            std:: cout << std::endl;
-//        }
-//    }
     std::cout << std::endl;
+
     m_model.addData(
             {
                     //Back
@@ -77,18 +69,16 @@ Renderer::Renderer(const char *img_path) : m_Texture(img_path) {
     );
 }
 
-void Renderer::add(glm::vec3 &position) {
+void CubeRenderer::add(glm::vec3 &position) {
     m_quads.push_back(position);
 }
 
-void Renderer::render(Player &camera) {
-
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+void CubeRenderer::render(Player &camera) {
     m_shader.use();
     m_Texture.bindTexture();
     m_model.bindVAO();
+
+    m_Texture.bindTexture();
 
     auto ProjViewMatrix = camera.getProjViewMatrix();
     m_shader.setMat4("ProjView", ProjViewMatrix);
@@ -96,13 +86,30 @@ void Renderer::render(Player &camera) {
     for (auto &quad : m_quads) {
         glm::mat4 model = glm::mat4(1.f);
         model = glm::translate(model, quad);
-//        float angle = 20.0f * (3 + 1);
-//        model = glm::rotate(model, (float) glfwGetTime() * glm::radians(angle), glm::vec3(1.f, 0.3f, .5f));
+        m_shader.setMat4("Model", model);
+        glDrawElements(GL_TRIANGLES, m_model.getIndicesCount(), GL_UNSIGNED_INT, 0);
+    }
+    m_model.unbindVAO();
+    m_quads.clear();
+}
+
+void CubeRenderer::render_simple(Player &camera, glm::mat4 &matrix) {
+    m_shader_simple.use();
+    m_Texture.bindTexture();
+    m_model.bindVAO();
+
+    m_shader_simple.setMat4("lightSpaceMatrix", matrix);
+    for (auto &quad : m_quads) {
+        glm::mat4 model = glm::mat4(1.f);
+        model = glm::translate(model, quad);
         m_shader.setMat4("Model", model);
         glDrawElements(GL_TRIANGLES, m_model.getIndicesCount(), GL_UNSIGNED_INT, 0);
     }
 
     m_quads.clear();
+}
+
+void CubeRenderer::cleanUp() {
 
 }
 

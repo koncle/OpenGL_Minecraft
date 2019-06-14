@@ -3,7 +3,6 @@
 //
 
 #include "World.h"
-#include <iostream>
 
 World::World() {
     generateWorld();
@@ -25,16 +24,24 @@ void World::generateWorld() {
     }
 }
 
-void World::render(Renderer& renderer) {
-    for(uint i = 0; i < MAX_WIDTH; ++i){
-        for(uint j = 0; j < MAX_WIDTH; ++j){
-            auto vector = map[i][j];
-            for(auto &entity :vector ){
-                if(entity.position.y > MIN_LEVEL) {
-                    renderer.add(entity.position);
-                }
-            }
+Entity World::getEntity(int x, int y, int z) {
+    if (x < 0 || z < 0 || x >= MAX_WIDTH || z >= MAX_WIDTH) {
+        return Entity(glm::vec3(x, y, z), AIR);
+    }
+
+    Entity target;
+    for (auto &objEntity : map[x][z]) {
+        if (objEntity.position.y == y) {
+            target = objEntity;
+            break;
         }
+    }
+    if(target.type != -1){
+        // return real block
+        return target;
+    }else{
+        // return air
+        return Entity(glm::vec3(x, y, z), AIR);
     }
 }
 
@@ -51,25 +58,49 @@ std::vector<Entity>* World::getAdjacentEntities(Entity& entity) {
     };
     for(auto &pos : adjacents) {
         pos = pos + position;
-        int x = std::floor(pos.x);
-        int y = std::floor(pos.y);
-        int z = std::floor(pos.z);
 
-        if (x < 0 || z < 0 || x >= MAX_WIDTH || z >= MAX_WIDTH) {
-            (*adjacentEntities).push_back(Entity(pos, AIR));
-            continue;
-        }
+        int x = int(std::floor(pos.x));
+        int y = int(std::floor(pos.y));
+        int z = int(std::floor(pos.z));
 
-        bool find = false;
-        for (auto &objEntity : map[x][z]) {
-            if (objEntity.position.y == y) {
-                (*adjacentEntities).push_back(objEntity);
-                find = true;
-                break;
-            }
-        }
-        // return air entity if not found;
-        if (!find) (*adjacentEntities).push_back(Entity(pos, AIR));
+        (*adjacentEntities).emplace_back(getEntity(x, y, z));
     }
     return adjacentEntities;
 }
+
+void World::addEntity(glm::vec3 pos, int type) {
+    pos.x = int(pos.x);
+    pos.y = int(pos.y);
+    pos.z = int(pos.z);
+    if (pos.x < 0 || pos.z < 0 || pos.x >= MAX_WIDTH || pos.z >= MAX_WIDTH) {
+        std::cout << "Invalid pos : (" << pos.x << ", " << pos.z << ") !!" << std::endl;
+        return;
+    }
+    auto entity = getEntity(pos.x, pos.y, pos.z);
+    if (entity.type == AIR) {
+        std::cout << "Add at : (" << pos.x << ", " << pos.z << ") !!" << std::endl;
+        map[int(pos.x)][int(pos.z)].emplace_back(Entity(pos, type));
+    }else{
+        std::cout << "Nowhere to put : (" << pos.x << ", " << pos.z << ") !!" << std::endl;
+    }
+}
+
+void World::removeEntity(glm::vec3 pos) {
+    if (pos.x < 0 || pos.z < 0 || pos.x >= MAX_WIDTH || pos.z >= MAX_WIDTH) {
+        std::cout << "Invalid pos : (" << pos.x << ", " << pos.z << ") !!" << std::endl;
+        return;
+    }
+    int x = int(pos.x), y = int(pos.y), z= int(pos.z);
+        std::vector<Entity> &y_list = map[x][z];
+        for (int i = 0; i < y_list.size(); ++i) {
+            if(y_list[i].position.y == y){
+                y_list.erase(y_list.begin()+i);
+                break;
+            }
+        }
+}
+
+std::vector<Entity> **World::getWorldMap() {
+    return map;
+}
+

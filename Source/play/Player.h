@@ -1,17 +1,12 @@
 #ifndef PLAYER_H_INCLUDED
 #define PLAYER_H_INCLUDED
 
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
-#include "glmlib.h"
-#include "Entity.h"
-#include "Constants.h"
-#include<iostream>
+#include "glhead.h"
+#include "../World/Entity.h"
 #include "../Collision/AABB.h"
-#include "World.h"
 #include "../Utils/Timer.h"
-
-class World;
+#include "../World/Constants.h"
+#include "../World/World.h"
 
 class Player : public Entity
 {
@@ -32,7 +27,6 @@ class Player : public Entity
 		glm::vec3 m_velocity = glm::vec3(0.f);
 
         glm::vec3 cameraFront1;
-        glm::vec3 cameraFront2;
         glm::vec3 cameraUp;
         float fov;
 

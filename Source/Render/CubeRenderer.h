@@ -5,22 +5,25 @@
 #ifndef OPENGLPROJECTS_RENDERER_H
 #define OPENGLPROJECTS_RENDERER_H
 
-#include <shader.h>
+#include "glhead.h"
+#include "../Shader/shader.h"
 #include "../World/Model.h"
-#include "glmlib.h"
+#include "../play/Player.h"
 #include "../Texture/TextureAtlas.h"
-#include "../World/Player.h"
 
-class  Player;
+class Player;
+class Shader;
 
-class Renderer{
+class CubeRenderer{
 public:
-    Renderer(const char* img_path);
+    CubeRenderer(const char* img_path, const char* vs, const char* fs);
     void add(glm::vec3& position);
     void render(Player& player);
-
+    void render_simple(Player& player, glm::mat4& matrix);
+    void cleanUp();
     Model m_model;
     Shader m_shader;
+    Shader m_shader_simple;
     TextureAtlas m_Texture;
 
 private:

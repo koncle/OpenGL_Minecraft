@@ -3,9 +3,8 @@
 
 Player::Player()
 {
-	position = glm::vec3(0.0f, 20.0f, 0.0f);
+	position = glm::vec3(-1.0f, 10.0f, -1.0f);
 	cameraFront1 = glm::vec3(0.0f, 0.0f, 1.0f);
-	cameraFront2 = glm::vec3(0.0f, 0.0f, 1.0f);
 	cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 	fov = 45.0f;
 
@@ -35,15 +34,16 @@ void Player::update(float dt, World& world)
 	float cameraSpeed = 0.001f*speed;
 	position += m_velocity * cameraSpeed;
 
-//	std::cout << position.x << " "<< position.y << " " << position.z << std::endl;
-    std::vector<Entity>* ajacentEntities = world.getAdjacentEntities(*this);
-	for (int i = 0; i < (*ajacentEntities).size(); ++i) {
-		Entity entity = (*ajacentEntities)[i];
+	// std::cout << position.x << " "<< position.y << " " << position.z << std::endl;
+	// std::cout << m_velocity.x << " "<< m_velocity.y << " " << m_velocity.z << std::endl;
+	std::vector<Entity>* adjacentEntities = world.getAdjacentEntities(*this);
+	for (int i = 0; i < (*adjacentEntities).size(); ++i) {
+		Entity entity = (*adjacentEntities)[i];
 		if (entity.type == AIR){
 			continue;
 		}
 		if(AABB::hit(entity, *this)){
-//			std::cout << "hit!"<< std::endl;
+			// std::cout << "hit!"<< std::endl;
 			switch (i){
 				// extra size to prevent no render for very close cube.
 				// It also can prevent some collision bugs.
@@ -126,7 +126,7 @@ void Player::mouseInput(GLFWwindow* window)
 	}
 
 	float xoffset = static_cast<float>(xpos - lastX);
-	float yoffset = static_cast<float>(lastY - ypos); 
+	float yoffset = static_cast<float>(lastY - ypos);
 
 	lastX = static_cast<float>(xpos);
 	lastY = static_cast<float>(ypos);
@@ -142,10 +142,6 @@ void Player::mouseInput(GLFWwindow* window)
 		pitch = 89.0f;
 	if (pitch < -89.0f)
 		pitch = -89.0f;
-
-	// it only cause restriction
-    //	if (yaw > 45)
-    //		yaw = 45;
 
 	cameraFront1.x = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
 	cameraFront1.y = sin(glm::radians(pitch));
@@ -167,31 +163,3 @@ glm::mat4 Player::getProjViewMatrix() {
 	auto proj = getProjectionMatrix();
 	return proj * view;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

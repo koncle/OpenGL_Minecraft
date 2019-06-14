@@ -3,20 +3,16 @@
 //
 #ifndef SHADER_H
 #define SHADER_H
-
-#include <glad/glad.h>
-#include <string>
+#include <glhead.h>
 #include <fstream>
 #include <sstream>
-#include <iostream>
-#include "glmlib.h"
 #include "assert.h"
 
 class Shader{
 public:
     unsigned int ID;
-    Shader();
-    Shader(const GLchar* vertexPath, const GLchar* fragmentPath);
+    Shader(): Shader("vs.vs", "fs.fs"){}
+    Shader(const std::string& vertexP, const std::string& fragmentP);
     void use();
     void set(const std::string &name, bool value) const;
     void set(const std::string &name, int value) const;
@@ -32,6 +28,5 @@ void checkShaderCompileStatus(unsigned int shader);
 void checkShaderProgramStatus(unsigned int program);
 
 unsigned int getShader(GLenum CODE, const char* src);
-
 #endif
 

@@ -5,10 +5,7 @@
 #ifndef OPENGLPROJECTS_FRAMEWORK_H
 #define OPENGLPROJECTS_FRAMEWORK_H
 
-#endif //OPENGLPROJECTS_FRAMEWORK_H
 
-#ifndef OPENGL_ENVS
-#define OPENGL_ENVS
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
@@ -23,4 +20,5 @@ GLFWwindow* inits(int width, int height);
 void start(GLFWwindow* window, void (*func)());
 
 void clearScreen();
-#endif
+
+#endif //OPENGLPROJECTS_FRAMEWORK_H

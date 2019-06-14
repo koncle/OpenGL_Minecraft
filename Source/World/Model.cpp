@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Model.h"
 
 Model::Model(const std::vector<GLfloat>& vertexPositions,
@@ -17,6 +18,10 @@ void Model::bindVAO() const
     glBindVertexArray(m_vao);
 }
 
+void Model::unbindVAO() const{
+    glBindVertexArray(0);
+}
+
 void Model::addData(const std::vector<GLfloat>& vertexPositions,
                     const std::vector<GLfloat>& textureCoords,
                     const std::vector<GLuint>&  indices)
@@ -32,6 +37,7 @@ void Model::addData(const std::vector<GLfloat>& vertexPositions,
     addVBO(3, vertexPositions);
     addVBO(2, textureCoords);
     addEBO(indices);
+    glBindVertexArray(0);
 }
 
 void Model::addVBO(int dimensions, const std::vector<GLfloat>& data)
@@ -50,10 +56,9 @@ void Model::addVBO(int dimensions, const std::vector<GLfloat>& data)
                           GL_FALSE,
                           0,
                           (GLvoid*) 0);
-
     glEnableVertexAttribArray(m_vboCount++);
-
     m_buffers.push_back(vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void Model::addEBO(const std::vector<GLuint>& indices)

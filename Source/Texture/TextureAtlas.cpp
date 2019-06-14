@@ -26,7 +26,7 @@ std::vector<GLfloat> TextureAtlas::getTextureCoords(const glm::vec2& coords)
     static const GLfloat INDV_TEX_SIZE    = 1.0f / TEX_PER_ROW;
     // bottom left is the origin (0, 0).
     // so use an offset to access to top left pixels.
-    auto offset = 1 - INDV_TEX_SIZE;
+    auto offset = 1.f - INDV_TEX_SIZE;
     auto xMin = (coords.x * INDV_TEX_SIZE);
     auto yMin = (coords.y * INDV_TEX_SIZE) + offset;
     auto xMax = (xMin + INDV_TEX_SIZE);
