@@ -27,6 +27,7 @@ void GUIRenderer::render() {
     m_model.bindVAO();
 
     for(int i = 0; i < m_guiEntities.size(); ++i){
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, m_guiEntities[i].texture_id);
         glm::mat4 model = glm::mat4(1.f);
         model = glm::translate(model, m_guiEntities[i].position);

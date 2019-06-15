@@ -1,6 +1,13 @@
 #include "Player.h"
 #include "../Utils/Timer.h"
 
+void show(glm::vec3 &a){
+	std::cout << "(" << a.x << ", " << a.y << ", " << a.z << ")" << std::endl;
+}
+void show(glm::vec4 &a){
+	std::cout << "(" << a.x << ", " << a.y << ", " << a.z << ", " << a.w << ")" << std::endl;
+}
+
 Player::Player()
 {
 	position = glm::vec3(-1.0f, 10.0f, -1.0f);
@@ -33,9 +40,8 @@ void Player::update(float dt, World& world)
 {
 	float cameraSpeed = 0.001f*speed;
 	position += m_velocity * cameraSpeed;
-
-	// std::cout << position.x << " "<< position.y << " " << position.z << std::endl;
-	// std::cout << m_velocity.x << " "<< m_velocity.y << " " << m_velocity.z << std::endl;
+	// std::cout <<"pos"; show(position); std::cout << "front"; show(cameraFront1);
+    // show(m_velocity);
 	std::vector<Entity>* adjacentEntities = world.getAdjacentEntities(*this);
 	for (int i = 0; i < (*adjacentEntities).size(); ++i) {
 		Entity entity = (*adjacentEntities)[i];
@@ -156,6 +162,7 @@ glm::mat4 Player::getViewMatrix() {
 
 glm::mat4 Player::getProjectionMatrix() {
 	return glm::perspective(glm::radians(fov), (800.f / 600.f), 0.1f, 100.0f);
+//	return glm::ortho(0.0f, 800.0f, 600.0f, 0.0f, -1.f, 1.0f);
 }
 
 glm::mat4 Player::getProjViewMatrix() {

@@ -2,12 +2,13 @@
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec2 aTexCoord;
 
-uniform mat4 Model;
-uniform mat4 ProjView;
+out vec2 TexCoord;
 
-uniform mat4 lightSpaceMatrix;
+uniform mat4 Model;
+uniform mat4 lightMatrix;
 
 void main()
 {
-    gl_Position = ProjView * lightSpaceMatrix * Model * vec4(aPos, 1.0);
+    gl_Position = lightMatrix * Model * vec4(aPos, 1.0);
+    TexCoord = vec2(aTexCoord.x, aTexCoord.y);
 }

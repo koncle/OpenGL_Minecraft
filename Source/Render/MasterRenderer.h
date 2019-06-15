@@ -10,6 +10,7 @@
 #include "../World/World.h"
 #include "CubeRenderer.h"
 #include "GUIRenderer.h"
+#include "../Shadow/Shadow.h"
 
 class GUIRenderer;
 class CubeRenderer;
@@ -21,7 +22,8 @@ public:
     void renderCube(glm::vec3 &position);
     void renderWorld(World &world);
     void renderGUI(GUIEntity &guiEntity);
-    void finishRender(Player &player);
+    void finishRender(Player &player, Shadow &shadow);
+    void finishRenderShadow(Player &player, Shadow &shadow);
     void cleanUp();
 private:
     GUIRenderer* guiRenderer;

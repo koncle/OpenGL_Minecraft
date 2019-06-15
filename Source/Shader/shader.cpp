@@ -9,7 +9,6 @@ void checkShaderCompileStatus(unsigned int shader){
     int  success;
     char infoLog[512];
     glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-
     if(!success)
     {
         glGetShaderInfoLog(shader, 512, NULL, infoLog);
@@ -75,9 +74,12 @@ Shader::Shader(const std::string& vertexP, const std::string& fragmentP) {
     const char *fShaderCode = fragmentCode.c_str();
 
     // 顶点着色器
+
     unsigned int vertex = getShader(GL_VERTEX_SHADER, vShaderCode);
+    std::cout << "complete vertex shader!" << vertexP << std::endl;
     // 片段着色器
     unsigned int fragment = getShader(GL_FRAGMENT_SHADER, fShaderCode);
+    std::cout << "complete fragment shader!" << fragmentP << std::endl;
 
     // 着色器程序
     ID = glCreateProgram();
@@ -121,6 +123,12 @@ void Shader::set(const std::string &name, float v1, float v2, float v3) const {
     int loc = glGetUniformLocation(ID, name.c_str());
     assert(loc != -1);
     glUniform3f(loc, v1, v2, v3);
+}
+
+void Shader::setVec3(const std::string &name, glm::vec3 vec3) const {
+    int loc = glGetUniformLocation(ID, name.c_str());
+    assert(loc != -1);
+    glUniform3f(loc, vec3.x, vec3.y, vec3.z);
 }
 
 void Shader::setMat4(const std::string &name, glm::mat4 mat) {

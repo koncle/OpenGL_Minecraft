@@ -6,7 +6,7 @@
 #include "../Texture/BasicTexture.h"
 
 MasterRenderer::MasterRenderer(){
-    cubeRenderer = new CubeRenderer("DefaultPack.png", "vs.vs", "fs.fs");
+    cubeRenderer = new CubeRenderer("DefaultPack.png", "cube.vs", "cube.fs");
     guiRenderer = new GUIRenderer();
 }
 
@@ -19,12 +19,18 @@ void MasterRenderer::renderGUI(GUIEntity &guientity) {
 }
 
 
-void MasterRenderer::finishRender(Player &player) {
+void MasterRenderer::finishRender(Player &player, Shadow &shadow) {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    cubeRenderer->render(player);
+    cubeRenderer->render(player, shadow);
     guiRenderer->render();
+}
+
+void MasterRenderer::finishRenderShadow(Player &player, Shadow& shadow) {
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    cubeRenderer->renderShadow(player, shadow);
 }
 
 void MasterRenderer::cleanUp() {

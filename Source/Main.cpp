@@ -19,28 +19,6 @@
 #include "play/InputProcessor.h"
 
 class  InputProcessor;
-bool intersectPlane(const glm::vec3 &n, const glm::vec3 &p0, const glm::vec3 &l0, const glm::vec3 &l, float &t)
-{
-    auto n_ = glm::normalize(n);
-    auto p0_ = glm::normalize(p0);
-    auto l0_ = glm::normalize(l0);
-    auto l_  = glm::normalize(l);
-    float denom = glm::dot(n_, l_);
-    if (denom > 1e-6) {
-        auto p0l0 = p0_ - l0_;
-        t = glm::dot(p0l0, n_) / denom;
-        return (t >= 0);
-    }
-    return false;
-}
-
-void test_intersection(){
-    // true : 5.5, 8.5, 3.5
-    std::vector<float> myPos = {8.25551, 8.74657, 3.63928};
-    std::vector<float> target = {4, 8, 3};
-}
-
-
 
 int main() {
     // initialize
@@ -50,13 +28,7 @@ int main() {
     }
 
     MasterRenderer renderer;
-//    CubeRenderer render("awesomeface.png");
-
     World world;
-
-    // capture mouse
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
     Player player;
     InputProcessor inputProcessor(player);
     // enable depth test to prevent occulsion
@@ -67,19 +39,30 @@ int main() {
     Timer timer;
     timer.restartFPS();
     glEnable(GL_DEPTH_TEST);
-    GUIEntity guiEntity("cross.png", {0, 0}, {0.02, 0.03});
+    GUIEntity crossbar("cross.png", {0, 0}, {0.02, 0.03});
+    Shadow shadow;
+    GUIEntity shadowTexture(shadow.getDepthTexture(), glm::vec3(-0.8, 0.8, 0), glm::vec3(0.2, 0.2, 0));
     while (!glfwWindowShouldClose(window)) {
 
+        glfwPollEvents();
         inputProcessor.handleInput(window, world);
         inputProcessor.update(timer.elapse(), world);
 
+        // used to find a view direction for shadow
+        shadow.changeView(player);
+
+        shadow.bindFrameBuffer();
         renderer.renderWorld(world);
-        renderer.renderGUI(guiEntity);
-        renderer.finishRender(player);
+        renderer.finishRenderShadow(player, shadow);
+
+        shadow.unbindFrameBuffer();
+        renderer.renderWorld(world);
+        renderer.renderGUI(crossbar);
+        renderer.renderGUI(shadowTexture);
+        renderer.finishRender(player, shadow);
 
         // -1
         glfwSwapBuffers(window);
-        glfwPollEvents();
         timer.restart();
         timer.countFPS();
 

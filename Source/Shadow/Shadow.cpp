@@ -5,50 +5,105 @@
 #include "Shadow.h"
 
 void Shadow::generateDepthBuffer() {
-    // framebuffer
+//    smallWindow();
     glGenFramebuffers(1, &framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
-    // create a color attachment texture
     glGenTextures(1, &depthMap);
     glBindTexture(GL_TEXTURE_2D, depthMap);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT16, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-    // attach texture to framebuffer
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthMap, 0);
     glDrawBuffer(GL_NONE);
-    glReadBuffer(GL_NONE);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    // glReadBuffer(GL_NONE);
+    createTextureAttachment(800, 600);
 
-    // now that we actually created the framebuffer and added all attachments we want to check if it is actually complete now
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void Shadow::smallWindow(){
+    glGenFramebuffers(1, &framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
+    createTextureAttachment(800, 600);
+    createDepthBufferAttachment(800, 600);
+
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    depthMap = texture;
+}
+
+void Shadow::createTextureAttachment(int width, int height){
+    // create a color attachment texture
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+// 将它附加到当前绑定的帧缓冲对象
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+}
+
+void Shadow::createDepthBufferAttachment(int width, int height){
+    // create a color attachment texture
+    glGenRenderbuffers(1, &rbo);
+    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 800, 600);
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
 }
 
 void Shadow::bindFrameBuffer() {
-    glBindTexture(GL_TEXTURE_2D, 0);
+    glViewport(0, 0, 1024, 1024);
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-    glViewport(0, 0, 800, 600);
 }
 
 void Shadow::unbindFrameBuffer(){
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glViewport(0, 0, 800, 600);
 }
 
 Shadow::~Shadow() {
     glDeleteFramebuffers(1, &framebuffer);
     glDeleteTextures(1, &depthMap);
+    glDeleteTextures(1, &texture);
 }
 
-void Shadow::use(Shader &shader) {
-    GLfloat near_plane = 1.0f, far_plane = 7.5f;
-    glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
-    glm::mat4 lightView = glm::lookAt(glm::vec3(-2.0f, 4.0f, -1.0f), glm::vec3(0.0f), glm::vec3(1.0));
-    glm::mat4 lightSpaceMatrix = lightProjection * lightView;
-    shader.setMat4("lightMat", lightSpaceMatrix);
+unsigned int Shadow::getTexture() {
+    return texture;
 }
+
+unsigned int Shadow::getDepthTexture() {
+    return depthMap;
+}
+
+void Shadow::changeView(Player &player){
+    lightView = player.getViewMatrix();
+    lightSpaceMatrix = lightProjection * lightView;
+}
+
+Shadow::Shadow() : shader("shadow.vs", "shadow.fs"){
+    generateDepthBuffer();
+    lightProjection = glm::ortho(-5.0f, 30.0f, 30.0f, -5.0f, -5.f, 40.f);
+    lightView = glm::lookAt(LIGHT_POS, LIGHT_POS+LIGHT_DIR, glm::vec3(0, 1, 0));
+    lightSpaceMatrix = lightProjection * lightView;
+}
+
+glm::mat4 Shadow::getLightSpaceMatrix() {
+    return lightSpaceMatrix;
+}
+
+Shader &Shadow::getShader() {
+    return shader;
+}
+

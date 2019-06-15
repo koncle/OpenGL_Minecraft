@@ -8,6 +8,14 @@ Model::Model(const std::vector<GLfloat>& vertexPositions,
     addData(vertexPositions, textureCoords, indices);
 }
 
+Model::Model(const std::vector<GLfloat>& vertexPositions,
+             const std::vector<GLfloat>& textureCoords,
+             const std::vector<GLfloat>& norms,
+             const std::vector<GLuint>&  indices)
+{
+    addData(vertexPositions, textureCoords, norms, indices);
+}
+
 Model::~Model()
 {
     deleteData();
@@ -36,6 +44,26 @@ void Model::addData(const std::vector<GLfloat>& vertexPositions,
 
     addVBO(3, vertexPositions);
     addVBO(2, textureCoords);
+    addEBO(indices);
+    glBindVertexArray(0);
+}
+
+void Model::addData(const std::vector<GLfloat>& vertexPositions,
+                    const std::vector<GLfloat>& textureCoords,
+                    const std::vector<GLfloat>& norms,
+                    const std::vector<GLuint>&  indices)
+{
+    if (m_vao != 0)
+        deleteData();
+
+    m_indicesCount = indices.size();
+
+    glGenVertexArrays(1, &m_vao);
+    glBindVertexArray(m_vao);
+
+    addVBO(3, vertexPositions);
+    addVBO(2, textureCoords);
+    addVBO(3, norms);
     addEBO(indices);
     glBindVertexArray(0);
 }

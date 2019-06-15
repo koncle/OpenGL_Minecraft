@@ -21,6 +21,7 @@ private:
 public:
     BlockPicker(Player &player):player(player){}
 
+    // return block around the crossbar pointing
     glm::vec3 getAroundBlock(GLFWwindow* window, World& world){
         updateRay(window);
         glm::vec3 targetBlock = stepRay(world);
@@ -30,6 +31,7 @@ public:
             return getBlockAroundTarget(player.position, targetBlock);
     }
 
+    // return block the crossbar pointing
     glm::vec3 getDirectBlock(GLFWwindow* window, World& world){
         updateRay(window);
         glm::vec3 targetBlock = stepRay(world);
@@ -38,63 +40,56 @@ public:
 
     bool pos_in_square(float pos_x, float pos_y, float rec_top_left_x, float rec_top_left_y,
                        float rec_bottom_right_x, float rec_bottom_right_y){
-        std::cout << "(" << pos_x << ", " << pos_y << ")" << std::endl;
+        // std::cout << "(" << pos_x << ", " << pos_y << ")" << std::endl;
         bool res = pos_x >= rec_top_left_x && pos_x <= rec_bottom_right_x && pos_y >= rec_bottom_right_y && pos_y <= rec_top_left_y;
-        std::cout << "(" << rec_top_left_x << ", " <<  rec_top_left_y << ", " << rec_bottom_right_x << ", " << rec_bottom_right_y << ")" << std::endl;
+        // std::cout << "(" << rec_top_left_x << ", " <<  rec_top_left_y << ", " << rec_bottom_right_x << ", " << rec_bottom_right_y << ")" << std::endl;
         return res;
     }
 
     glm::vec3 intersec_with_block(glm::vec3 myPos, glm::vec3 blockPos, glm::vec3 targetPos){
         auto dir = targetPos - myPos ;
 
-        std::cout << "Block pos" << "(" << blockPos.x << ", " << blockPos.y << ", " << blockPos.z << ")" << std::endl;
+        // std::cout << "Block pos" << "(" << blockPos.x << ", " << blockPos.y << ", " << blockPos.z << ")" << std::endl;
         auto scale_factor = (blockPos -myPos)/ dir;
         auto scale_factor_2 = (blockPos + 1.f - myPos) / dir;
         // test left plane, scale z
         if(dir.x > 0){
             auto z_scaled =  myPos + dir * scale_factor.x;
-            std::cout << "(" << z_scaled.x << ", " << z_scaled.y << ", " << z_scaled.z << ")" << std::endl;
             if (pos_in_square(z_scaled.z, z_scaled.y, blockPos.z, blockPos.y+1., blockPos.z+1, blockPos.y)) return glm::vec3(-1, 0, 0);
         }
         if(dir.x <= 0){
             auto z_scaled = myPos + dir * scale_factor_2.x;
-            std::cout << "(" << z_scaled.x << ", " << z_scaled.y << ", " << z_scaled.z << ")" << std::endl;
             if (pos_in_square(z_scaled.z, z_scaled.y, blockPos.z, blockPos.y+1., blockPos.z+1, blockPos.y)) return glm::vec3(1, 0, 0);
         }
 
         if(dir.y > 0){
             auto z_scaled = myPos + dir * scale_factor.y;
-            std::cout << "(" << z_scaled.x << ", " << z_scaled.y << ", " << z_scaled.z << ")" << std::endl;
             if (pos_in_square(z_scaled.x, z_scaled.z, blockPos.x, blockPos.z+1., blockPos.x+1, blockPos.z)) return glm::vec3(0, -1, 0);
         }
         if(dir.y <= 0){
             auto z_scaled = myPos + dir * scale_factor_2.y;
-            std::cout << "(" << z_scaled.x << ", " << z_scaled.y << ", " << z_scaled.z << ")" << std::endl;
             if (pos_in_square(z_scaled.x, z_scaled.z, blockPos.x, blockPos.z+1., blockPos.x+1, blockPos.z)) return glm::vec3(0, 1, 0);
         }
 
         if(dir.z > 0){
             auto z_scaled = myPos + dir * scale_factor.z;
-            std::cout << "(" << z_scaled.x << ", " << z_scaled.y << ", " << z_scaled.z << ")" << std::endl;
             if (pos_in_square(z_scaled.x, z_scaled.y, blockPos.x, blockPos.y+1., blockPos.x+1, blockPos.y)) return glm::vec3(0, 0, -1);
         }
         if(dir.z <= 0){
             auto z_scaled = myPos + dir * scale_factor_2.z;
-            std::cout << "(" << z_scaled.x << ", " << z_scaled.y << ", " << z_scaled.z << ")" << std::endl;
             if (pos_in_square(z_scaled.x, z_scaled.y, blockPos.x, blockPos.y+1., blockPos.x+1, blockPos.y)) return glm::vec3(0, 0, 1);
         }
         return glm::vec3(0, 0, 0);
     }
 
     glm::vec3 getBlockAroundTarget(glm::vec3 yourPos, glm::vec3 targetPos){
-//        targetPos += 0.5;
         auto x = int(targetPos.x);
         auto y = int(targetPos.y);
         auto z = int(targetPos.z);
-        std::cout << "Your Pos (" << yourPos.x << ", " <<  yourPos.y << ", " << yourPos.z << ")!!" << std::endl;
-        std::cout << "target Pos (" << targetPos.x << ", " <<  targetPos.y << ", " <<  targetPos.z << ")!!" << std::endl;
+        // std::cout << "Your Pos (" << yourPos.x << ", " <<  yourPos.y << ", " << yourPos.z << ")!!" << std::endl;
+        // std::cout << "target Pos (" << targetPos.x << ", " <<  targetPos.y << ", " <<  targetPos.z << ")!!" << std::endl;
         auto change = intersec_with_block(yourPos, glm::vec3(x, y, z), targetPos);
-        std::cout << "Final (" << targetPos.x << ", " <<  targetPos.y << ", " <<  targetPos.z << ")!!" << std::endl<< std::endl;
+        // std::cout << "Final (" << targetPos.x << ", " <<  targetPos.y << ", " <<  targetPos.z << ")!!" << std::endl<< std::endl;
         return targetPos+change;
     }
 

@@ -8,13 +8,23 @@ class Model : public NonCopyable
 {
     public:
         Model() = default;
+    Model(const std::vector<GLfloat>& vertexPositions,
+          const std::vector<GLfloat>& textureCoords,
+          const std::vector<GLuint>&  indices);
+
         Model(const std::vector<GLfloat>& vertexPositions,
               const std::vector<GLfloat>& textureCoords,
+              const std::vector<GLfloat>& norms,
               const std::vector<GLuint>&  indices);
         ~Model();
 
+    void addData(const std::vector<GLfloat>& vertexPositions,
+                 const std::vector<GLfloat>& textureCoords,
+                 const std::vector<GLuint>&  indices);
+
         void addData(const std::vector<GLfloat>& vertexPositions,
                      const std::vector<GLfloat>& textureCoords,
+                     const std::vector<GLfloat>& norms,
                      const std::vector<GLuint>&  indices);
 
         void deleteData();

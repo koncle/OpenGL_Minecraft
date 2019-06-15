@@ -78,7 +78,7 @@ void World::addEntity(glm::vec3 pos, int type) {
     }
     auto entity = getEntity(pos.x, pos.y, pos.z);
     if (entity.type == AIR) {
-        std::cout << "Add at : (" << pos.x << ", " << pos.z << ") !!" << std::endl;
+        std::cout << "Add at : (" << pos.x << ", " <<  pos.y << ", " << pos.z << ") !!" << std::endl;
         map[int(pos.x)][int(pos.z)].emplace_back(Entity(pos, type));
     }else{
         std::cout << "Nowhere to put : (" << pos.x << ", " << pos.z << ") !!" << std::endl;

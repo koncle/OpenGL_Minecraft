@@ -41,6 +41,9 @@ GLFWwindow* inits(int width, int height) {
     }
     glViewport(0, 0, width, height);
 
+    // capture mouse
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
     return window;
 }
 
