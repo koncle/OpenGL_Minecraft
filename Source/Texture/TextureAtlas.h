@@ -3,13 +3,14 @@
 
 #include "BasicTexture.h"
 #include <vector>
+#include "../World/Constants.h"
 
 class TextureAtlas : public BasicTexture
 {
     public:
         TextureAtlas(const std::string& textureFileName);
 
-        std::vector<GLfloat> getTexture(const std::string name);
+        std::vector<GLfloat> getTexture(const int type);
         std::vector<GLfloat> getTextureCoords(const glm::vec2& coords);
 
     private:

@@ -1,9 +1,0 @@
-//
-// Created by koncle on 2019/6/14.
-//
-
-
-#ifndef OPENGLPROJECTS_MOUSEPICKER_H_1
-#define OPENGLPROJECTS_MOUSEPICKER_H_1
-
-#endif //OPENGLPROJECTS_MOUSEPICKER_H_1

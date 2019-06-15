@@ -10,8 +10,8 @@ MasterRenderer::MasterRenderer(){
     guiRenderer = new GUIRenderer();
 }
 
-void MasterRenderer::renderCube(glm::vec3 &position) {
-    cubeRenderer->add(position);
+void MasterRenderer::renderCube(Entity &entity) {
+    cubeRenderer->add(entity);
 }
 
 void MasterRenderer::renderGUI(GUIEntity &guientity) {
@@ -35,7 +35,9 @@ void MasterRenderer::finishRenderShadow(Player &player, Shadow& shadow) {
 
 void MasterRenderer::cleanUp() {
     cubeRenderer->cleanUp();
+    guiRenderer->cleanUp();
     delete cubeRenderer;
+    delete guiRenderer;
 }
 
 void MasterRenderer::renderWorld(World &world) {
@@ -46,7 +48,7 @@ void MasterRenderer::renderWorld(World &world) {
             auto vector = map[i][j];
             for(auto &entity :vector ){
                 if(entity.position.y >= MIN_LEVEL) {
-                    renderCube(entity.position);
+                    renderCube(entity);
                 }
             }
         }

@@ -19,7 +19,7 @@ class Player;
 class MasterRenderer{
 public:
     MasterRenderer();
-    void renderCube(glm::vec3 &position);
+    void renderCube(Entity &entity);
     void renderWorld(World &world);
     void renderGUI(GUIEntity &guiEntity);
     void finishRender(Player &player, Shadow &shadow);

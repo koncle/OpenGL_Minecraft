@@ -30,6 +30,7 @@ set(LIBS glfw3 GLAD STB)
 
 file(GLOB_RECURSE SOURCE
         "Source/*.h"
+        "Source/*.h"
         "Source/*.cpp")
 add_executable(GC ${SOURCE})
 target_link_libraries(GC ${LIBS})

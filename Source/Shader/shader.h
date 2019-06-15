@@ -13,6 +13,7 @@ public:
     unsigned int ID;
     Shader(): Shader("cube.vs", "cube.fs"){}
     Shader(const std::string& vertexP, const std::string& fragmentP);
+    void cleanUp();
     void use();
     void set(const std::string &name, bool value) const;
     void set(const std::string &name, int value) const;

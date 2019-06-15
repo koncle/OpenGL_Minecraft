@@ -6,10 +6,23 @@ TextureAtlas::TextureAtlas(const std::string& textureFileName):BasicTexture(text
     m_individualTextureSize = 16;
 }
 
-std::vector<GLfloat> TextureAtlas::getTexture(const std::string name) {
-    auto top    = getTextureCoords({0, 0});
-    auto side   = getTextureCoords({1, 0});
-    auto bottom = getTextureCoords({2, 0});
+std::vector<GLfloat> TextureAtlas::getTexture(const int type) {
+    std::vector<GLfloat> top, side, bottom;
+
+    switch(type) {
+        case GRASS:
+            top = getTextureCoords({0, 0});
+            side = getTextureCoords({1, 0});
+            bottom = getTextureCoords({2, 0});
+            break;
+        case GROUND:
+            top = getTextureCoords({2, 0});
+            bottom = top; side = top;
+            break;
+        default:
+            break;
+    }
+
     std::vector<GLfloat> texCoords;
     texCoords.insert(texCoords.end(), side.begin(),     side.end());
     texCoords.insert(texCoords.end(), side.begin(),     side.end());

@@ -40,5 +40,6 @@ void GUIRenderer::render() {
 }
 
 void GUIRenderer::cleanUp() {
-
+    m_model.deleteData();
+    m_guiEntities.clear();
 }

@@ -20,7 +20,7 @@ void main()
     float objectNearestLight = texture(shadowMap, shadowCoords.xy).r;
     float lightFactor = 1.0;
     if(shadowCoords.z > objectNearestLight){
-         lightFactor = 1.0 - 0.4;
+         lightFactor = 0.6;
     }
 
     // light

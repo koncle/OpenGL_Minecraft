@@ -18,16 +18,17 @@ class Shader;
 class CubeRenderer{
 public:
     CubeRenderer(const char* img_path, const char* vs, const char* fs);
-    void add(glm::vec3& position);
+    ~CubeRenderer(){cleanUp();};
+    void add(Entity &entity);
     void render(Player& player, Shadow &shadow);
     void renderShadow(Player& player, Shadow& shadow);
     void cleanUp();
-    Model m_model;
+    Model grass_model;
+    Model ground_model;
     Shader m_shader;
-    Shader m_shader_simple;
     TextureAtlas m_Texture;
 
 private:
-    std::vector<glm::vec3> m_quads;
+    std::vector<Entity> m_quads;
 };
 #endif //OPENGLPROJECTS_RENDERER_H

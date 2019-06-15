@@ -16,6 +16,7 @@ class Shader;
 class GUIRenderer{
 public:
     GUIRenderer();
+    ~GUIRenderer(){cleanUp();}
     void add(GUIEntity &guiEntity);
     void render();
     void cleanUp();

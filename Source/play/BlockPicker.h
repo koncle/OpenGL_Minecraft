@@ -5,7 +5,6 @@
 #ifndef OPENGLPROJECTS_MOUSEPICKER_H
 #define OPENGLPROJECTS_MOUSEPICKER_H
 
-#include "utils.cpp"
 #include "glmlib.h"
 #include "../World/World.h"
 #include "Player.h"

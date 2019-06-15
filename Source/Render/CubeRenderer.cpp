@@ -3,105 +3,103 @@
 //
 #include "CubeRenderer.h"
 
-CubeRenderer::CubeRenderer(const char *img_path, const char *vs, const char *fs) : m_Texture(img_path), m_shader_simple(vs, fs) {
-    std::vector<GLfloat> texCoords = m_Texture.getTexture("default");
-    std::cout << std::endl;
+CubeRenderer::CubeRenderer(const char *img_path, const char *vs, const char *fs) : m_Texture(img_path) {
+    const std::vector<GLfloat > vertice =   {
+            //Back
+            1, 0, 0,
+            0, 0, 0,
+            0, 1, 0,
+            1, 1, 0,
 
-    m_model.addData(
-            {
-                    //Back
-                    1, 0, 0,
-                    0, 0, 0,
-                    0, 1, 0,
-                    1, 1, 0,
+            //Front
+            0, 0, 1,
+            1, 0, 1,
+            1, 1, 1,
+            0, 1, 1,
 
-                    //Front
-                    0, 0, 1,
-                    1, 0, 1,
-                    1, 1, 1,
-                    0, 1, 1,
+            //Right
+            1, 0, 1,
+            1, 0, 0,
+            1, 1, 0,
+            1, 1, 1,
 
-                    //Right
-                    1, 0, 1,
-                    1, 0, 0,
-                    1, 1, 0,
-                    1, 1, 1,
+            //Left
+            0, 0, 0,
+            0, 0, 1,
+            0, 1, 1,
+            0, 1, 0,
 
-                    //Left
-                    0, 0, 0,
-                    0, 0, 1,
-                    0, 1, 1,
-                    0, 1, 0,
+            //Top
+            0, 1, 1,
+            1, 1, 1,
+            1, 1, 0,
+            0, 1, 0,
 
-                    //Top
-                    0, 1, 1,
-                    1, 1, 1,
-                    1, 1, 0,
-                    0, 1, 0,
+            //Bottom
+            0, 0, 0,
+            1, 0, 0,
+            1, 0, 1,
+            0, 0, 1.
+    };
+    const std::vector<GLuint> indice = {
+        // 前
+        0, 1, 2,
+                2, 3, 0,
 
-                    //Bottom
-                    0, 0, 0,
-                    1, 0, 0,
-                    1, 0, 1,
-                    0, 0, 1.
-            },
-            texCoords,
-            {
-                    0.0f, 0.0f, -1.0f,
-                    0.0f, 0.0f, -1.0f,
-                    0.0f, 0.0f, -1.0f,
-                    0.0f, 0.0f, -1.0f,
-
-                    0.0f, 0.0f, 1.0f,
-                    0.0f, 0.0f, 1.0f,
-                    0.0f, 0.0f, 1.0f,
-                    0.0f, 0.0f, 1.0f,
-
-                    1.0f, 0.0f, 0.0f,
-                    1.0f, 0.0f, 0.0f,
-                    1.0f, 0.0f, 0.0f,
-                    1.0f, 0.0f, 0.0f,
-
-                    -1.0f, 0.0f, 0.0f,
-                    -1.0f, 0.0f, 0.0f,
-                    -1.0f, 0.0f, 0.0f,
-                    -1.0f, 0.0f, 0.0f,
-
-                    0.0f, 1.0f, 0.0f,
-                    0.0f, 1.0f, 0.0f,
-                    0.0f, 1.0f, 0.0f,
-                    0.0f, 1.0f, 0.0f,
-
-                    0.0f, -1.0f, 0.0f,
-                    0.0f, -1.0f, 0.0f,
-                    0.0f, -1.0f, 0.0f,
-                    0.0f, -1.0f, 0.0f,
-                },
-            {
-                    // 前
-                    0, 1, 2,
-                    2, 3, 0,
-
-                    4, 5, 6,
-                    6, 7, 4,
+                4, 5, 6,
+                6, 7, 4,
 //
-                    8, 9, 10,
-                    10, 11, 8,
+                8, 9, 10,
+                10, 11, 8,
 
-                    12, 13, 14,
-                    14, 15, 12,
+                12, 13, 14,
+                14, 15, 12,
 
-                    16, 17, 18,
-                    18, 19, 16,
+                16, 17, 18,
+                18, 19, 16,
 
-                    20, 21, 22,
-                    22, 23, 20
-            }
-    );
+                20, 21, 22,
+                22, 23, 20
+    };
+    const std::vector<GLfloat> norms =  {
+            0.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f,
+
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f,
+
+            1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+            -1.0f, 0.0f, 0.0f,
+
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f,
+
+            0.0f, -1.0f, 0.0f,
+            0.0f, -1.0f, 0.0f,
+            0.0f, -1.0f, 0.0f,
+            0.0f, -1.0f, 0.0f,
+    };
+    const std::vector<GLfloat> grass_texture = m_Texture.getTexture(GRASS);
+    const std::vector<GLfloat> ground_texture = m_Texture.getTexture(GROUND);
+    grass_model.addData(vertice, grass_texture, norms, indice);
+    ground_model.addData(vertice, ground_texture, norms, indice);
 }
 
-void CubeRenderer::add(glm::vec3 &position) {
-    m_quads.push_back(position);
+void CubeRenderer::add(Entity &entity) {
+    m_quads.push_back(entity);
 }
 
 void CubeRenderer::render(Player &camera, Shadow &shadow) {
@@ -112,7 +110,6 @@ void CubeRenderer::render(Player &camera, Shadow &shadow) {
 
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, shadow.getTexture());
-    m_model.bindVAO();
 
     auto ProjViewMatrix = camera.getProjViewMatrix();
 
@@ -128,35 +125,57 @@ void CubeRenderer::render(Player &camera, Shadow &shadow) {
     m_shader.setVec3("viewPos", viewPos);
 
     for (auto &quad : m_quads) {
+        switch (quad.type){
+            case GRASS:
+                grass_model.bindVAO();
+                break;
+            case GROUND:
+                ground_model.bindVAO();
+                break;
+            default:
+                std::cout << "wrong type"<< quad.type << std::endl;
+        }
         glm::mat4 model = glm::mat4(1.f);
-        model = glm::translate(model, quad);
+        model = glm::translate(model, quad.position);
         m_shader.setMat4("Model", model);
-        glDrawElements(GL_TRIANGLES, m_model.getIndicesCount(), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, grass_model.getIndicesCount(), GL_UNSIGNED_INT, 0);
     }
-    m_model.unbindVAO();
+    grass_model.unbindVAO();
     m_quads.clear();
 }
 
 void CubeRenderer::renderShadow(Player &camera, Shadow &shadow) {
-    // use shadow shader to render objects
-    auto shader = shadow.getShader();
-    shader.use();
-
-    // origin objects
     m_Texture.bindTexture();
-    m_model.bindVAO();
 
+    // use & use shadow shader to render objects
+    Shader &shader = shadow.getShader();
+    shader.use();
     shader.setMat4("lightMatrix", shadow.getLightSpaceMatrix());
-//    shader.setMat4("lightMatrix", camera.getProjViewMatrix());
+    // shader.setMat4("lightMatrix", camera.getProjViewMatrix());
     for (auto &quad : m_quads) {
+        switch (quad.type){
+            case GRASS:
+                grass_model.bindVAO();
+                break;
+            case GROUND:
+                ground_model.bindVAO();
+                break;
+            default:
+                std::cout << "wrong type" << std::endl;
+        }
         glm::mat4 model = glm::mat4(1.f);
-        model = glm::translate(model, quad);
+        model = glm::translate(model, quad.position);
         shader.setMat4("Model", model);
-        glDrawElements(GL_TRIANGLES, m_model.getIndicesCount(), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, grass_model.getIndicesCount(), GL_UNSIGNED_INT, 0);
     }
-    m_model.unbindVAO();
+    grass_model.unbindVAO();
     m_quads.clear();
 }
 
-void CubeRenderer::cleanUp() {}
+void CubeRenderer::cleanUp() {
+    m_Texture.cleanUp();
+    grass_model.deleteData();
+    ground_model.deleteData();
+    m_shader.cleanUp();
+}
 
